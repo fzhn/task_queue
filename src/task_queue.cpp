@@ -10,11 +10,13 @@ extern "C" {
 template<typename T, uint64_t SIZE>
 class TaskQueue {
 private:
-    static constexpr unsigned constLog2(unsigned n, unsigned p = 0) {
-        return (n <= 1) ? p : constLog2(n / 2, p + 1);
+    static constexpr unsigned getMsbPos(unsigned n) {
+        unsigned p = 1;
+        while (n >>= 1) {p++;}
+        return p;
     }
     static constexpr uint64_t sizePowerOf2() {
-        return (1UL << ((uint64_t) (constLog2(SIZE - 1)) + 1));
+        return 1UL << (uint64_t) getMsbPos(SIZE - 1);
     }
     static constexpr uint64_t mSize = sizePowerOf2();
     static constexpr uint64_t mWrapMask = mSize - 1;
@@ -35,7 +37,6 @@ public:
         }
 
         T task = std::move(mQueue[mReadPtr & mWrapMask]);
-
         mReadPtr++;
         return std::move(task);
     }
