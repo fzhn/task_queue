@@ -11,12 +11,12 @@ template<typename T, uint64_t SIZE>
 class TaskQueue {
 private:
     static constexpr unsigned getMsbPos(unsigned n) {
-        unsigned p = 1;
+        unsigned p = 0;
         while (n >>= 1) {p++;}
         return p;
     }
     static constexpr uint64_t sizePowerOf2() {
-        return 1UL << (uint64_t) getMsbPos(SIZE - 1);
+        return 1UL << (uint64_t) getMsbPos(SIZE);
     }
     static constexpr uint64_t mSize = sizePowerOf2();
     static constexpr uint64_t mWrapMask = mSize - 1;
